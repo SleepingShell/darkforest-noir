@@ -3,4 +3,4 @@ authors = [""]
 compiler_version = "0.4.1"
 
 [dependencies]
-perlin = {tag = "v0.1.0-alpha", git = "https://github.com/SleepingShell/darkforest-noir/perlin"}
+#perlin = {tag = "v0.1.0-alpha", git = "https://github.com/SleepingShell/darkforest-noir/perlin"}

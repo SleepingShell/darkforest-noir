@@ -1,5 +1,4 @@
 use dep::std;
-use df::perlin::Random;
 
 // Check:
 //      x^2 + y^2 < r^2
