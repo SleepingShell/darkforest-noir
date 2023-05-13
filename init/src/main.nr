@@ -1,5 +1,6 @@
 use dep::std;
 
+//TODO: Move this to library so move can also use it
 // Check:
 //      x^2 + y^2 < r^2
 //      x^2 + y^2 > 0.98 * r^2

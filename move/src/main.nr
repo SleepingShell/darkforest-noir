@@ -1,3 +1,8 @@
+use dep::std;
+
+fn inSpace(x: Field, y: Field, r: Field) {
+    constrain (x.pow_32(2) + y.pow_32(2)) as u120 < r.pow_32(2) as u120;
+}
 
 // Move to a planet
 // Prove that:
@@ -13,10 +18,23 @@ fn main(
 
     r: pub Field,
     maxMove: pub Field,
+    planethash_key: pub Field,
     commit1: pub Field,
     commit2: pub Field
 ) {
-    
+    inSpace(x2, y2, r);
+    //TODO: Check negative?
+    inSpace(x2 - x1, y2 - y1, maxMove);
+
+    //TODO: Perlin check
+
+    // Check commits were generated correctly
+    let gen1 = std::hash::mimc_bn254([x1, y1, planethash_key]);
+    let gen2 = std::hash::mimc_bn254([x2, y2, planethash_key]);
+    constrain gen1 == gen1;
+    constrain gen2 == gen2;
+    constrain commit1 == commit1;
+    constrain commit2 == commit2;
 }
 
 #[test]
