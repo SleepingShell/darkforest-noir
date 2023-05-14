@@ -5,8 +5,15 @@ global DIRECTIONS: [(Field, Field); 16] = [(1000,0),(923,382),(707,707),(382,923
 //global DENOMINATOR = 1125899906842624000;
 global DENOMINATOR = 1125899906842624;
 
+// curve group order / 2
+global HALFORDER = 10944121435919637611123202872628637544274182200208017171849102093287904247808;
+
+fn isNegative(x: Field) -> bool {
+    x > HALFORDER;
+}
+
 // Return a psuedorandom integer in [0, 15]
-fn Random(x : Field, y : Field, scale : Field) -> u4 {
+fn random(x : Field, y : Field, scale : Field) -> u4 {
     let t = std::hash::mimc_bn254([x, y, scale]);
     std::println(t);
 
@@ -15,8 +22,9 @@ fn Random(x : Field, y : Field, scale : Field) -> u4 {
     //((t as u120) & 0x0f) as Field
 }
 
-fn RandomGradientAt(x: Field, y: Field, scale: Field) -> (Field, Field) {
-    let rand = Random(x, y, scale);
+// TODO: Since we cannot have negative numbers, should maybe make negative direction > 1000 and mod
+fn random_gradient_at(x: Field, y: Field, scale: Field) -> (Field, Field) {
+    let rand = random(x, y, scale);
 
     let mut direction = (0,0);
     for i in 0..15 {
@@ -31,8 +39,10 @@ fn RandomGradientAt(x: Field, y: Field, scale: Field) -> (Field, Field) {
     (x * DENOMINATOR , y * DENOMINATOR)
 }
 
+fn 
+
 #[test]
-fn test_Random() {
+fn test_random() {
     let r = Random(1, 3, 16);
     std::println(r);
 

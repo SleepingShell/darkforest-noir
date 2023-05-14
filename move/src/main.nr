@@ -1,6 +1,6 @@
 use dep::std;
 
-fn inSpace(x: Field, y: Field, r: Field) {
+fn in_space(x: Field, y: Field, r: Field) {
     constrain (x.pow_32(2) + y.pow_32(2)) as u120 < r.pow_32(2) as u120;
 }
 
@@ -22,9 +22,9 @@ fn main(
     commit1: pub Field,
     commit2: pub Field
 ) {
-    inSpace(x2, y2, r);
+    in_space(x2, y2, r);
     //TODO: Check negative?
-    inSpace(x2 - x1, y2 - y1, maxMove);
+    in_space(x2 - x1, y2 - y1, maxMove);
 
     //TODO: Perlin check
 

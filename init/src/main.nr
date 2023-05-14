@@ -4,7 +4,7 @@ use dep::std;
 // Check:
 //      x^2 + y^2 < r^2
 //      x^2 + y^2 > 0.98 * r^2
-fn inRim(x: Field, y: Field, r: Field) {
+fn in_rim(x: Field, y: Field, r: Field) {
     let r2 = r.pow_32(2) as u120;
     let sum = (x.pow_32(2) + y.pow_32(2)) as u120;
     constrain (sum < r2);
@@ -29,7 +29,7 @@ fn main(x: Field,
     constrain (y as u120 <= 2.pow_32(31) as u120);
     
     // Check point is valid
-    inRim(x, y, r);
+    in_rim(x, y, r);
 
     // Check commit was generated correctly
     let gen = std::hash::mimc_bn254([x, y, planethash_key]);
