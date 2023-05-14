@@ -81,8 +81,17 @@ fn get_corners_and_grad_vectors(x: Field, y: Field, scale: Field) -> ([(Field, F
 
     res = random_gradient_at(top_right_coords.x as Field, top_right_coords.y as Field, scale);
     let top_right_gradient = Coords { x: res.0, y: res.1 };
+}
 
-    
+fn getWeight(corner: Coords, point: Coords, isBottom: bool, isLeft: bool) -> Field {
+    let diff = Coords {
+        x: isLeft ? point.x - corner.x : corner.x - point.x,
+        y: isBottom ? point.y - corner.y : corner.y - point.y,
+    }
+
+    let numerator = (DENOMINATOR - diff.x) * (DENOMINATOR - diff.y);
+
+    numerator / DENOMINATOR
 }
 
 #[test]
