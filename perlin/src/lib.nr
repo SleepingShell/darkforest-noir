@@ -65,6 +65,13 @@ impl Signed {
         }
     }
 
+    fn div(self, other: Self) -> Self {
+        Self {
+            x: self.x / other.x,
+            is_neg: self.is_neg ^ other.is_neg,
+        }
+    }
+
     fn muli(self, other: u120) -> Self {
         Self {
             x: self.x * other,
@@ -191,7 +198,7 @@ fn get_corners(point: Coords, scale: u120) -> [Coords; 4] {
     ]
 }
 
-fn single_scale_perlin(point: Coords, scale: u120, seed: Field) -> u120 {
+fn single_scale_perlin(point: Coords, scale: u120, seed: Field) -> Signed {
     let corners = get_corners(point, scale);
 
     let mut numerator = toSigned(0);
@@ -215,21 +222,23 @@ fn single_scale_perlin(point: Coords, scale: u120, seed: Field) -> u120 {
     }
 
     //numerator.x / (VEC_DENOMINATOR * scale*scale*scale)
-    numerator.x / (scale * scale * scale)
+    numerator.div(toSigned(scale * scale * scale))
 }
 
-fn compute_perlin(point: Coords, scale: u120, seed: Field) -> u120 {
-    let mut perlin: u120 = 0;
+fn compute_perlin(point: Coords, scale: u120, seed: Field) -> Signed {
+    let mut perlin = toSigned(0);
 
-    perlin += single_scale_perlin(point, scale, seed);
-    perlin += single_scale_perlin(point, scale*2, seed);
-    perlin += single_scale_perlin(point, scale*4, seed);
-    perlin += single_scale_perlin(point, scale*4, seed);
+    perlin = perlin.add(single_scale_perlin(point, scale, seed));
+    perlin = perlin.add(single_scale_perlin(point, scale*2, seed));
+    perlin = perlin.add(single_scale_perlin(point, scale*4, seed));
+    perlin = perlin.add(single_scale_perlin(point, scale*4, seed));
 
-    perlin += single_scale_perlin(point, scale, seed);
-    perlin /= 4;
+    perlin = perlin.add(single_scale_perlin(point, scale, seed));
+    perlin = perlin.div(toSigned(4));
 
-    (perlin * (PERLIN_MAX)/2) + (PERLIN_MAX / 2)
+    //(perlin * (PERLIN_MAX)/2) + (PERLIN_MAX / 2)
+    perlin = perlin.muli(PERLIN_MAX/2).add(toSigned(PERLIN_MAX/2));
+    perlin
 }
 
 #[test]
@@ -241,9 +250,12 @@ fn test_random() {
     std::println(gxx);
     std::println(gyx);
 
-    let perl1 = compute_perlin(Coords {x: 145, y: 20},20,10);
+    let perl1 = compute_perlin(Coords {x: 145, y: 20}, 20, 10).x;
     std::println(perl1);
 
-    let perl2 = compute_perlin(Coords {x: 151, y: 18}, 20, 10);
+    let perl2 = compute_perlin(Coords {x: 151, y: 18}, 20, 10).x;
     std::println(perl2);
+
+    let perl3 = compute_perlin(Coords {x: 141, y: 20}, 20, 10).x;
+    std::println(perl3);
 }
