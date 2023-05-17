@@ -20,6 +20,7 @@ impl Signed {
             val = self.x + other.x;
             is_neg = self.is_neg;
         } else {
+            //TODO: Handle when equal (0 should be not negative)
             if (self.x > other.x) {
                 val = self.x - other.x;
                 if (self.is_neg) {
@@ -209,10 +210,11 @@ fn single_scale_perlin(point: Coords, scale: u120, seed: Field) -> u120 {
         let weight = get_weight(corner, point, scale);
 
         let t = dot.muli(weight);
-        numerator.add(t);
+        numerator = numerator.add(t);
     }
 
-    numerator.x / (VEC_DENOMINATOR * scale*scale*scale)
+    //numerator.x / (VEC_DENOMINATOR * scale*scale*scale)
+    numerator.x / (scale * scale * scale)
 }
 
 #[test]
