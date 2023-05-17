@@ -116,6 +116,7 @@ impl Coords {
 //];
 global VEC_DENOMINATOR = 1000;
 global DENOMINATOR = 1125899906842624; //2^50
+global PERLIN_MAX = 64;
 
 // curve group order / 2
 global HALF_ORDER = 10944121435919637611123202872628637544274182200208017171849102093287904247808;
@@ -217,10 +218,22 @@ fn single_scale_perlin(point: Coords, scale: u120, seed: Field) -> u120 {
     numerator.x / (scale * scale * scale)
 }
 
+fn compute_perlin(point: Coords, scale: u120, seed: Field) -> u120 {
+    let mut perlin: u120 = 0;
+
+    perlin += single_scale_perlin(point, scale, seed);
+    perlin += single_scale_perlin(point, scale*2, seed);
+    perlin += single_scale_perlin(point, scale*4, seed);
+    perlin += single_scale_perlin(point, scale*4, seed);
+
+    perlin += single_scale_perlin(point, scale, seed);
+    perlin /= 4;
+
+    (perlin * (PERLIN_MAX)/2) + (PERLIN_MAX / 2)
+}
+
 #[test]
 fn test_random() {
-    //let r = random(1, 3, 16, 10);
-
     let (gx, gy) = random_gradient_at(Coords {x: 10, y: 20},4,16);
     
     let gxx = gx.x;
@@ -228,6 +241,9 @@ fn test_random() {
     std::println(gxx);
     std::println(gyx);
 
-    let perl1 = single_scale_perlin(Coords {x: 145, y: 20},20,10);
+    let perl1 = compute_perlin(Coords {x: 145, y: 20},20,10);
     std::println(perl1);
+
+    let perl2 = compute_perlin(Coords {x: 151, y: 18}, 20, 10);
+    std::println(perl2);
 }
