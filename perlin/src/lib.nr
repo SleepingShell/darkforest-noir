@@ -113,24 +113,6 @@ impl Coords {
 //global DIRECTIONS: [(u120, u120); 16] = [
 //    (1000,0),(923,382),(707,707),(382,923),(0,1000),(1383,923),(1708,707),(1924,382),(2000,0),(1924,1383),(1708,1708),(1383,1924),(1001,2000),(382,1924),(707,1708),(923,1383)
 //];
-global DIRECTIONS: [(Signed, Signed); 16] = [
-    (Signed { x: 1000, is_neg: false }, Signed { x: 0, is_neg: false }),
-    (Signed { x: 923, is_neg: false }, Signed { x: 382, is_neg: false }),
-    (Signed { x: 707, is_neg: false }, Signed { x: 707, is_neg: false }),
-    (Signed { x: 382, is_neg: false }, Signed { x: 923, is_neg: false }),
-    (Signed { x: 0, is_neg: false }, Signed { x: 1000, is_neg: false }),
-    (Signed { x: 383, is_neg: true }, Signed { x: 923, is_neg: false }),
-    (Signed { x: 708, is_neg: true }, Signed {x: 707, is_neg: false }),
-    (Signed { x: 924, is_neg: true }, Signed { x: 382, is_neg: false}),
-    (Signed { x: 1000, is_neg: true }, Signed { x: 0, is_neg: false }),
-    (Signed { x: 924, is_neg: true }, Signed { x: 383, is_neg: true }),
-    (Signed { x: 708, is_neg: true }, Signed { x: 708, is_neg: true }),
-    (Signed { x: 383, is_neg: true }, Signed { x: 924, is_neg: true }),
-    (Signed { x: 1, is_neg: true }, Signed { x: 1000, is_neg: true }),
-    (Signed { x: 382, is_neg: false }, Signed { x: 924, is_neg: true }),
-    (Signed { x: 707, is_neg: false }, Signed { x: 708, is_neg: true}),
-    (Signed { x: 923, is_neg: false }, Signed { x: 383, is_neg: true})
-];
 global VEC_DENOMINATOR = 1000;
 global DENOMINATOR = 1125899906842624; //2^50
 
@@ -154,18 +136,36 @@ fn random(x: u120, y: u120, scale: u120, seed: Field) -> u4 {
 }
 
 fn random_gradient_at(point: Coords, scale: u120, seed: Field) -> (Signed, Signed) {
+    let DIRECTIONS: [(Signed, Signed); 16] = [
+        (Signed { x: 1000, is_neg: false }, Signed { x: 0, is_neg: false }),
+        (Signed { x: 923, is_neg: false }, Signed { x: 382, is_neg: false }),
+        (Signed { x: 707, is_neg: false }, Signed { x: 707, is_neg: false }),
+        (Signed { x: 382, is_neg: false }, Signed { x: 923, is_neg: false }),
+        (Signed { x: 0, is_neg: false }, Signed { x: 1000, is_neg: false }),
+        (Signed { x: 383, is_neg: true }, Signed { x: 923, is_neg: false }),
+        (Signed { x: 708, is_neg: true }, Signed {x: 707, is_neg: false }),
+        (Signed { x: 924, is_neg: true }, Signed { x: 382, is_neg: false}),
+        (Signed { x: 1000, is_neg: true }, Signed { x: 0, is_neg: false }),
+        (Signed { x: 924, is_neg: true }, Signed { x: 383, is_neg: true }),
+        (Signed { x: 708, is_neg: true }, Signed { x: 708, is_neg: true }),
+        (Signed { x: 383, is_neg: true }, Signed { x: 924, is_neg: true }),
+        (Signed { x: 1, is_neg: true }, Signed { x: 1000, is_neg: true }),
+        (Signed { x: 382, is_neg: false }, Signed { x: 924, is_neg: true }),
+        (Signed { x: 707, is_neg: false }, Signed { x: 708, is_neg: true }),
+        (Signed { x: 923, is_neg: false }, Signed { x: 383, is_neg: true }),
+    ];
     let rand = random(point.x, point.y, scale, seed);
 
-    //let mut direction = (Signed::zero(), Signed::zero());
-    //for i in 0..16 {
-    //    if (i as u4 == rand) {
-    //        direction = DIRECTIONS[i];
-    //    }
-    //};
+    let mut direction = (Signed::zero(), Signed::zero());
+    for i in 0..16 {
+        if (i as u4 == rand) {
+            direction = DIRECTIONS[i];
+        }
+    };
 
-    let direction = DIRECTIONS[5];
+    //direction = DIRECTIONS[0];
 
-    (direction.0.mul(point.x), direction.1.mul(point.y))
+    (direction.0.muli(point.x), direction.1.muli(point.y))
 }
 
 fn get_weight(corner: Coords, point: Coords, scale: u120) -> u120 {
@@ -192,10 +192,9 @@ fn get_corners(point: Coords, scale: u120) -> [Coords; 4] {
 fn single_scale_perlin(point: Coords, scale: u120, seed: Field) -> u120 {
     let corners = get_corners(point, scale);
 
-    let mut numerator = Signed { x: 0, is_neg: false };
+    let mut numerator = toSigned(0);
     for i in 0..4 {
         let corner = corners[i];
-        //let offset = Coords { x: point.x - corner.x, y: point.y - corner.y };
         let offsetx = toSigned(point.x).sub(toSigned(corner.x));
         let offsety = toSigned(point.y).sub(toSigned(corner.y));
         let offset = Coords {
@@ -204,17 +203,16 @@ fn single_scale_perlin(point: Coords, scale: u120, seed: Field) -> u120 {
         };
         
         let gradient = random_gradient_at(offset, scale, seed);
-        let dotx = offset.x.mul(gradient.0);
-        let doty = offset.y.mul(gradient.1);
+        let dotx = gradient.0.muli(offset.x);
+        let doty = gradient.1.muli(offset.y);
         let dot = dotx.add(doty);
-
         let weight = get_weight(corner, point, scale);
+
         let t = dot.muli(weight);
-        //numerator += weight * dot;
         numerator.add(t);
     }
 
-    numerator / (VEC_DENOMINATOR * scale*scale*scale)
+    numerator.x / (VEC_DENOMINATOR * scale*scale*scale)
 }
 
 #[test]
@@ -222,6 +220,12 @@ fn test_random() {
     //let r = random(1, 3, 16, 10);
 
     let (gx, gy) = random_gradient_at(Coords {x: 10, y: 20},4,16);
-    std::println(gx);
-    std::println(gy);
+    
+    let gxx = gx.x;
+    let gyx = gy.x;
+    std::println(gxx);
+    std::println(gyx);
+
+    let perl1 = single_scale_perlin(Coords {x: 145, y: 20},20,10);
+    std::println(perl1);
 }
