@@ -116,15 +116,8 @@ impl Coords {
     }
 }
 
-// Taken from darkforest-eth, nefgatives were mod 1000
-
-//global DIRECTIONS: [(u120, u120); 16] = [
-//    (1000,0),(923,382),(707,707),(382,923),(0,1000),(1383,923),(1708,707),(1924,382),(2000,0),(1924,1383),(1708,1708),(1383,1924),(1001,2000),(382,1924),(707,1708),(923,1383)
-//];
-global VEC_DENOMINATOR = 1000;
 global DENOMINATOR = 1125899906842624; //2^50
 global PERLIN_MAX = 64;
-
 // curve group order / 2
 global HALF_ORDER = 10944121435919637611123202872628637544274182200208017171849102093287904247808;
 
@@ -171,8 +164,6 @@ fn random_gradient_at(point: Coords, scale: u120, seed: Field) -> (Signed, Signe
             direction = DIRECTIONS[i];
         }
     };
-
-    //direction = DIRECTIONS[0];
 
     (direction.0.muli(point.x), direction.1.muli(point.y))
 }
@@ -221,7 +212,6 @@ fn single_scale_perlin(point: Coords, scale: u120, seed: Field) -> Signed {
         numerator = numerator.add(t);
     }
 
-    //numerator.x / (VEC_DENOMINATOR * scale*scale*scale)
     numerator.div(toSigned(scale * scale * scale))
 }
 
