@@ -1,0 +1,3 @@
+[submodule "eth"]
+	path = eth
+	url = https://github.com/darkforest-eth/eth
