@@ -118,16 +118,6 @@ impl Coords {
 
 global DENOMINATOR = 1125899906842624; //2^50
 global PERLIN_MAX = 64;
-// curve group order / 2
-global HALF_ORDER = 10944121435919637611123202872628637544274182200208017171849102093287904247808;
-
-fn is_negative(x: Field) -> bool {
-    x > HALF_ORDER
-}
-
-fn is_direction_negative(x: u120) -> bool {
-    x > VEC_DENOMINATOR
-}
 
 // Return a psuedorandom integer in [0, 15]
 fn random(x: u120, y: u120, scale: u120, seed: Field) -> u4 {
