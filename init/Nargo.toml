@@ -3,5 +3,5 @@ authors = [""]
 compiler_version = "0.5.1"
 
 [dependencies]
-#signed = {tag = "v0.2.1", git = "https://github.com/SleepingShell/noir-signed"}
+signed = {tag = "v0.2.1", git = "https://github.com/SleepingShell/noir-signed"}
 perlin = {tag = "v0.1.2", git = "https://github.com/SleepingShell/noir-perlin"}
