@@ -19,12 +19,12 @@ fn in_rim(p: Coords, r: Field) {
 //  perlin(x, y) == perl
 //  Masked coordinates are correct mimc(x, y) = commit
 fn main(
-        point: Coords,
-        planethash_key: Field,
+    point: Coords,
+    planethash_key: Field,
 
-        r: pub Field, 
-        scale: pub Field,
-        commit: pub Field
+    r: pub Field, 
+    scale: pub Field,
+    commit: pub Field
 ) {
     // Check coordinates are less than 2^31
     constrain (point.x.absi() as u120 <= 2.pow_32(31) as u120);

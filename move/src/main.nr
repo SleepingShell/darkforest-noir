@@ -1,7 +1,12 @@
+use dep::perlin::Coords;
 use dep::std;
 
-fn in_space(x: Field, y: Field, r: Field) {
-    constrain (x.pow_32(2) + y.pow_32(2)) as u120 < r.pow_32(2) as u120;
+fn in_space(p: Coords, r: Field) {
+    constrain (p.x.squared().add(p.y.squared())).absi() < r.pow_32(2) as u124;
+}
+
+fn commithash(p: Coords, key: Field) -> Field {
+    std::hash::mimc_bn254([p.x.absi() as Field, p.y.absi() as Field, key])
 }
 
 // Move to a planet
@@ -11,10 +16,8 @@ fn in_space(x: Field, y: Field, r: Field) {
 //      Move within max distance        (x2-x1)^2 + (y2-y1)^2 < maxMove^2
 //      Masked coordinates are correct  mimc(x1,x2) = commit1; mimc(x2,y2) = commit2
 fn main(
-    x1: Field,
-    y1: Field,
-    x2: Field,
-    y2: Field,
+    from: Coords,
+    to: Coords,
 
     r: pub Field,
     maxMove: pub Field,
@@ -22,15 +25,14 @@ fn main(
     commit1: pub Field,
     commit2: pub Field
 ) {
-    in_space(x2, y2, r);
-    //TODO: Check negative?
-    in_space(x2 - x1, y2 - y1, maxMove);
+    in_space(to, r);
+    in_space(from.diff(to), maxMove);
 
     //TODO: Perlin check
 
     // Check commits were generated correctly
-    let gen1 = std::hash::mimc_bn254([x1, y1, planethash_key]);
-    let gen2 = std::hash::mimc_bn254([x2, y2, planethash_key]);
+    let gen1 = commithash(from, planethash_key);
+    let gen2 = commithash(to, planethash_key);
     constrain gen1 == gen1;
     constrain gen2 == gen2;
     constrain commit1 == commit1;
