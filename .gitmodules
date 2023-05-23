@@ -1,3 +1,0 @@
-[submodule "eth"]
-	path = eth
-	url = https://github.com/SleepingShell/df-eth
