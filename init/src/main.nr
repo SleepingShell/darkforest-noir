@@ -43,6 +43,8 @@ fn main(
 
     constrain r == r;
     constrain planethash_key == planethash_key;
+
+    let perlGen = compute_perlin(point, scale, planethash_key);
 }
 
 #[test]
