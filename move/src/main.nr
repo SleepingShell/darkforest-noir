@@ -19,11 +19,14 @@ fn main(
     from: Coords,
     to: Coords,
 
+    commit1: pub Field,
+    commit2: pub Field,
+    newPerlin: pub u124,
     r: pub Field,
     maxMove: pub Field,
     planethash_key: pub Field,
-    commit1: pub Field,
-    commit2: pub Field
+    spacetype_key: pub Field,
+    scale: pub Field
 ) {
     in_space(to, r);
     in_space(from.diff(to), maxMove);
@@ -37,6 +40,10 @@ fn main(
     constrain gen2 == gen2;
     constrain commit1 == commit1;
     constrain commit2 == commit2;
+
+    constrain newPerlin == newPerlin;
+    constrain spacetype_key == spacetype_key;
+    constrain scale == scale;
 }
 
 #[test]
