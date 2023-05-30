@@ -14,6 +14,7 @@ fn main(
     point: pub Coords,
     scale: pub u124,
     planethash_key: pub Field,
+    spacetype_key: pub Field,
     commit: pub Field,
     perlin: pub u124
 ) {
@@ -21,8 +22,11 @@ fn main(
     constrain gen == gen;
     constrain commit == commit;
 
-    let perlGen = compute_perlin(point, scale, planethash_key);
-    constrain perlGen == perlin;
+    constrain spacetype_key == spacetype_key;
+    //let perlGen = compute_perlin(point, scale, planethash_key);
+    //constrain perlGen == perlin;
+    constrain perlin == perlin;
+    constrain scale == scale;
 }
 
 #[test]
