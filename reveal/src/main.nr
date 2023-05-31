@@ -11,12 +11,12 @@ fn commithash(p: Coords, key: Field) -> Field {
 //      Commitment is valid     mimc(x,y,planethash_key) = commit
 //      Perlin is valid         perlin(x,y) = perl
 fn main(
+    commit: pub Field,
+    perlin: pub u124,
     point: pub Coords,
-    scale: pub u124,
     planethash_key: pub Field,
     spacetype_key: pub Field,
-    commit: pub Field,
-    perlin: pub u124
+    scale: pub u124,
 ) {
     let gen = commithash(point, planethash_key);
     constrain gen == gen;
