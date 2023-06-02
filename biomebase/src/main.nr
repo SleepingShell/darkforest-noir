@@ -7,10 +7,10 @@ fn commithash(p: Coords, key: Field) -> Field {
     std::hash::mimc_bn254([p.x.absi() as Field, p.y.absi() as Field, key])
 }
 
-// Reveal location of a commited planet
+// Prove that I know the correct biome of a planet:
 // Prove that:
-//      Commitment is valid     mimc(x,y,planethash_key) = commit
-//      Perlin is valid         perlin(x,y) = perl
+//      Commitment is valid     mimc(x,y,planethash_key) == commit
+//      Biome is valid (perlin w/ biomebase_key)    perlin(x,y) == biome_base
 fn main(
     point: Coords,
 
