@@ -2,6 +2,7 @@ use dep::perlin::Coords;
 use dep::perlin::compute_perlin;
 use dep::std;
 
+// Calculate the commitment hash (aka Location in Solidity) of a point
 fn commithash(p: Coords, key: Field) -> Field {
     std::hash::mimc_bn254([p.x.absi() as Field, p.y.absi() as Field, key])
 }
@@ -19,11 +20,12 @@ fn main(
     scale: pub u124,
 ) {
     let gen = commithash(point, planethash_key);
+    // constrain gen == commit;
     constrain gen == gen;
     constrain commit == commit;
 
     constrain spacetype_key == spacetype_key;
-    //let perlGen = compute_perlin(point, scale, planethash_key);
+    //let perlGen = compute_perlin(point, scale, spacetype_key);
     //constrain perlGen == perlin;
     constrain perlin == perlin;
     constrain scale == scale;

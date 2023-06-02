@@ -1,10 +1,12 @@
 use dep::perlin::Coords;
 use dep::std;
 
+// Ensures that the coordinates are inside the area of a circle defined by the radius
 fn in_space(p: Coords, r: Field) {
     constrain (p.x.squared().add(p.y.squared())).absi() < r.pow_32(2) as u124;
 }
 
+// Calculate the commitment hash (aka Location in Solidity) of a point
 fn commithash(p: Coords, key: Field) -> Field {
     std::hash::mimc_bn254([p.x.absi() as Field, p.y.absi() as Field, key])
 }
@@ -29,18 +31,20 @@ fn main(
     scale: pub Field
 ) {
     in_space(to, r);
-    in_space(from.diff(to), maxMove);
-
-    //TODO: Perlin check
+    in_space(from.diff(to), maxMove); // Same equation as in-area check
 
     // Check commits were generated correctly
     let gen1 = commithash(from, planethash_key);
     let gen2 = commithash(to, planethash_key);
+    // constrain gen1 == commit1;
+    // constrain gen2 == commit2;
     constrain gen1 == gen1;
     constrain gen2 == gen2;
     constrain commit1 == commit1;
     constrain commit2 == commit2;
 
+    //let perlGen = compute_perlin(to, scale, spacetype_key);
+    //constrain perlGen == newPerlin;
     constrain newPerlin == newPerlin;
     constrain spacetype_key == spacetype_key;
     constrain scale == scale;
