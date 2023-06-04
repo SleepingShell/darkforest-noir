@@ -25,7 +25,7 @@ fn main(
     constrain gen == gen;
     constrain commit == commit;
 
-    constrain spacetype_key == spacetype_key;
+    constrain biomebase_key == biomebase_key;
     //let biome_gen = compute_perlin(point, scale, biomebase_key);
     //constrain biome_gen == biome_base;
     constrain biome_base == biome_base;
