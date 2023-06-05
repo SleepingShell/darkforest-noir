@@ -1,6 +1,7 @@
 use dep::std;
-use dep::perlin::compute_perlin;
-use dep::perlin::Coords;
+use dep::df::perlin::Coords;
+use dep::df::perlin::compute_perlin;
+use dep::df::commithash;
 
 // This is different from in_space of other circuits, this checks we are in the outter RIM of space,
 // not just inside of space.
@@ -14,11 +15,6 @@ fn in_rim(p: Coords, r: Field) {
     constrain (sum * 100 > r2 *98);
 }
 
-// Calculate the commitment hash (aka Location in Solidity) of a point
-fn commithash(p: Coords, key: Field) -> Field {
-    std::hash::mimc_bn254([p.x.absi() as Field, p.y.absi() as Field, key])
-}
-
 // Initialize a player in the space
 // Prove that:
 //  The coordinates are inside the rim of the space
@@ -27,7 +23,7 @@ fn commithash(p: Coords, key: Field) -> Field {
 fn main(
     point: Coords,
 
-    commit: pub Field
+    commit: pub Field,
     perlin: pub u124,
     r: pub Field, 
     planethash_key: pub Field,

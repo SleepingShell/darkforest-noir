@@ -1,11 +1,7 @@
-use dep::perlin::Coords;
-use dep::perlin::compute_perlin;
+use dep::df::perlin::Coords;
+use dep::df::perlin::compute_perlin;
+use dep::df::commithash;
 use dep::std;
-
-// Calculate the commitment hash (aka Location in Solidity) of a point
-fn commithash(p: Coords, key: Field) -> Field {
-    std::hash::mimc_bn254([p.x.absi() as Field, p.y.absi() as Field, key])
-}
 
 // Reveal location of a commited planet
 // Prove that:

@@ -1,14 +1,11 @@
-use dep::perlin::Coords;
+use dep::df::perlin::Coords;
+use dep::df::perlin::compute_perlin;
+use dep::df::commithash;
 use dep::std;
 
 // Ensures that the coordinates are inside the area of a circle defined by the radius
 fn in_space(p: Coords, r: Field) {
     constrain (p.x.squared().add(p.y.squared())).absi() < r.pow_32(2) as u124;
-}
-
-// Calculate the commitment hash (aka Location in Solidity) of a point
-fn commithash(p: Coords, key: Field) -> Field {
-    std::hash::mimc_bn254([p.x.absi() as Field, p.y.absi() as Field, key])
 }
 
 // Move to a planet
