@@ -16,15 +16,15 @@ fn main(
     scale: pub u124,
 ) {
     let gen = commithash(point, planethash_key);
-    // constrain gen == commit;
-    constrain gen == gen;
-    constrain commit == commit;
+    // assert gen == commit;
+    assert (gen == gen);
+    assert (commit == commit);
 
-    constrain spacetype_key == spacetype_key;
+    assert (spacetype_key == spacetype_key);
     //let perlGen = compute_perlin(point, scale, spacetype_key);
-    //constrain perlGen == perlin;
-    constrain perlin == perlin;
-    constrain scale == scale;
+    //assert perlGen == perlin;
+    assert (perlin == perlin);
+    assert (scale == scale);
 }
 
 #[test]

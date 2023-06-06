@@ -5,7 +5,7 @@ use dep::std;
 
 // Ensures that the coordinates are inside the area of a circle defined by the radius
 fn in_space(p: Coords, r: Field) {
-    constrain (p.x.squared().add(p.y.squared())).absi() < r.pow_32(2) as u124;
+    assert ( (p.x.squared().add(p.y.squared())).absi() < r.pow_32(2) as u124 );
 }
 
 // Move to a planet
@@ -33,18 +33,18 @@ fn main(
     // Check commits were generated correctly
     let gen1 = commithash(from, planethash_key);
     let gen2 = commithash(to, planethash_key);
-    // constrain gen1 == commit1;
-    // constrain gen2 == commit2;
-    constrain gen1 == gen1;
-    constrain gen2 == gen2;
-    constrain commit1 == commit1;
-    constrain commit2 == commit2;
+    // assert gen1 == commit1;
+    // assert gen2 == commit2;
+    assert (gen1 == gen1);
+    assert (gen2 == gen2);
+    assert (commit1 == commit1);
+    assert (commit2 == commit2);
 
     //let perlGen = compute_perlin(to, scale, spacetype_key);
-    //constrain perlGen == newPerlin;
-    constrain newPerlin == newPerlin;
-    constrain spacetype_key == spacetype_key;
-    constrain scale == scale;
+    //assert perlGen == newPerlin;
+    assert (newPerlin == newPerlin);
+    assert (spacetype_key == spacetype_key);
+    assert (scale == scale);
 }
 
 #[test]

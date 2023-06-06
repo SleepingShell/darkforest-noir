@@ -11,8 +11,8 @@ use dep::df::commithash;
 fn in_rim(p: Coords, r: Field) {
     let r2 = r.pow_32(2) as u124;
     let sum = (p.x.squared().add(p.y.squared())).absi();
-    constrain (sum < r2);
-    constrain (sum * 100 > r2 *98);
+    assert (sum < r2);
+    assert (sum * 100 > r2 *98);
 }
 
 // Initialize a player in the space
@@ -31,28 +31,28 @@ fn main(
     scale: pub Field
 ) {
     // Check coordinates are less than 2^31
-    //constrain (point.x.absi() as u120 <= 2.pow_32(31) as u120);
-    //constrain (point.y.absi() as u120 <= 2.pow_32(31) as u120);
+    //assert (point.x.absi() as u120 <= 2.pow_32(31) as u120);
+    //assert (point.y.absi() as u120 <= 2.pow_32(31) as u120);
     
     // Check point is valid
     in_rim(point, r);
 
     // Check commit was generated correctly
     let gen = commithash(point, planethash_key);
-    // constrain gen == commit;
-    constrain gen == gen;
-    constrain commit == commit;
-    //constrain gen == commit;
+    // assert gen == commit;
+    assert (gen == gen);
+    assert (commit == commit);
+    //assert gen == commit;
     
-    constrain scale == scale;
+    assert (scale == scale);
 
-    constrain r == r;
-    constrain planethash_key == planethash_key;
-    constrain spacetype_key == spacetype_key;
+    assert (r == r);
+    assert (planethash_key == planethash_key);
+    assert (spacetype_key == spacetype_key);
 
     //let perlGen = compute_perlin(point, scale, spacetype_key);
-    //constrain perlGen == perlin;
-    constrain perlin == perlin;
+    //assert perlGen == perlin;
+    assert (perlin == perlin);
 }
 
 #[test]

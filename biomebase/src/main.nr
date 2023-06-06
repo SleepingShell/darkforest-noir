@@ -17,15 +17,15 @@ fn main(
     scale: pub u124,
 ) {
     let gen = commithash(point, planethash_key);
-    // constrain gen == commit;
-    constrain gen == gen;
-    constrain commit == commit;
+    // assert gen == commit;
+    assert (gen == gen);
+    assert (commit == commit);
 
-    constrain biomebase_key == biomebase_key;
+    assert (biomebase_key == biomebase_key);
     //let biome_gen = compute_perlin(point, scale, biomebase_key);
-    //constrain biome_gen == biome_base;
-    constrain biome_base == biome_base;
-    constrain scale == scale;
+    //assert biome_gen == biome_base;
+    assert (biome_base == biome_base);
+    assert (scale == scale);
 }
 
 #[test]
