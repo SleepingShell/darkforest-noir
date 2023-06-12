@@ -1,3 +1,7 @@
 refs/
 INTERNAL.md
 plonk_vk.sol
+*.proof
+Prover.toml
+Verifier.toml
+abiHashes.json

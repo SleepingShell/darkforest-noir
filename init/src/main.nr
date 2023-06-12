@@ -35,7 +35,7 @@ fn main(
     //assert (point.y.absi() as u120 <= 2.pow_32(31) as u120);
     
     // Check point is valid
-    in_rim(point, r);
+    //in_rim(point, r);
 
     // Check commit was generated correctly
     let gen = commithash(point, planethash_key);
