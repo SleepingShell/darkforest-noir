@@ -9,14 +9,14 @@ struct Coords {
 impl Coords {
     fn diff(self, other: Self) -> Self {
         Self {
-            x: self.x.sub(other.x).abs(),
-            y: self.y.sub(other.y).abs(),
+            x: self.x.sub(other.x),
+            y: self.y.sub(other.y),
         }
     }
 }
 
 global DENOMINATOR = 1125899906842624; //2^50
-global PERLIN_MAX = 64;
+global PERLIN_MAX = 32;
 global pow123: u124 = 10633823966279326983230456482242756608; //2^123
 
 // Return a psuedorandom integer in [0, 15]
@@ -66,12 +66,17 @@ fn random_gradient_at(point: Coords, scale: u124, seed: Field) -> (Signed, Signe
         }
     };
 
-    (direction.0.mul(point.x), direction.1.mul(point.y))
+    //(direction.0.mul(point.x), direction.1.mul(point.y))
+    //(direction.0.muli(DENOMINATOR/1000), direction.1.muli(DENOMINATOR/1000))
+    (direction.0, direction.1)
 }
 
 fn get_weight(corner: Coords, point: Coords, scale: u124) -> u124 {
     let diff = corner.diff(point);
     let res = (scale - diff.x.absi()) * (scale - diff.y.absi());
+    //let mut res = (DENOMINATOR - diff.x.absi()) * (DENOMINATOR - diff.y.absi());
+    //res += (scale - scale);
+    //res /= DENOMINATOR;
 
     res
 }
@@ -92,30 +97,38 @@ fn get_corners(point: Coords, scale: u124) -> [Coords; 4] {
     ]
 }
 
+fn dot(offset: Coords, gradient: (Signed, Signed)) -> Signed {
+    let dotx = gradient.0.mul(offset.x);
+    let doty = gradient.1.mul(offset.y);
+    dotx.add(doty)
+}
+
 fn single_scale_perlin(point: Coords, scale: u124, seed: Field) -> Signed {
     let corners = get_corners(point, scale);
 
     let mut numerator = Signed::to_signed(0);
     for i in 0..4 {
         let corner = corners[i];
-        let offsetx = point.x.sub(corner.x);
-        let offsety = point.y.sub(corner.y);
-        let offset = Coords {
-            x: offsetx,
-            y: offsety,
-        };
+
+        // Denominator: scale
+        let offset = point.diff(corner);
         
+        // Denominator: 1000
         let gradient = random_gradient_at(corner, scale, seed);
-        let dotx = gradient.0.mul(offset.x);
-        let doty = gradient.1.mul(offset.y);
-        let dot = dotx.add(doty);
+        
+        // Denominator: 1000*scale
+        let d = dot(offset, gradient); 
+
+        // Denominator: scale**2
         let weight = get_weight(corner, point, scale);
 
-        let t = dot.muli(weight);
+        // Denominator: 1000*scale**3 
+        let t = d.muli(weight);
         numerator = numerator.add(t);
     }
 
-    numerator.div(Signed::to_signed(scale * scale * scale))
+    // Denominator: scale
+    numerator.div(Signed::to_signed(1000*scale*scale))
 }
 
 fn compute_perlin(point: Coords, scale: u124, seed: Field) -> u124 {
@@ -125,13 +138,16 @@ fn compute_perlin(point: Coords, scale: u124, seed: Field) -> u124 {
     perlin = perlin.add(single_scale_perlin(point, scale*2, seed));
     perlin = perlin.add(single_scale_perlin(point, scale*4, seed));
     perlin = perlin.add(single_scale_perlin(point, scale*8, seed));
+
     perlin = perlin.div(Signed::to_signed(4));
-    perlin = perlin.muli(PERLIN_MAX/2).add(Signed::to_signed(PERLIN_MAX/2));
-    perlin.absi()
+    perlin = perlin.muli(PERLIN_MAX/2);
+
+    //(perlin.absi() / scale) + (PERLIN_MAX/2)
+    perlin.div(Signed::to_signed(scale)).add(Signed::to_signed(PERLIN_MAX/2)).absi()
 }
 
 #[test]
-fn test_random() {
+fn test_perlin() {
     let perl1 = compute_perlin(Coords {x: Signed::to_signed(145), y: Signed::to_signed(10)}, 128, 10);
     std::println(perl1);
 
@@ -140,4 +156,10 @@ fn test_random() {
 
     let perl3 = compute_perlin(Coords {x: Signed::to_signed(147), y: Signed::to_signed(20)}, 128, 10);
     std::println(perl3);
+
+    let perl4 = compute_perlin(Coords {x: Signed::to_signed(55502045), y: Signed::to_signed(2222200)}, 128, 10);
+    std::println(perl4);
+
+    let perl5 = compute_perlin(Coords {x: Signed::to_signed(7589282), y: Signed::to_signed(41241)}, 128, 10);
+    std::println(perl5);
 }
