@@ -27,6 +27,7 @@ fn random(x: u124, y: u124, scale: u124, seed: Field) -> u4 {
     8*(bits[3] as u4) + 4*(bits[2] as u4) + 2*(bits[1] as u4) + (bits[0] as u4)
 }
 
+// Return a deterministicly random direction of the gradient vector
 fn random_gradient_at(point: Coords, scale: u124, seed: Field) -> (Signed, Signed) {
     let DIRECTIONS: [(Signed, Signed); 16] = [
         (Signed { x: 1000, is_neg: false }, Signed { x: 0, is_neg: false }),
@@ -66,21 +67,19 @@ fn random_gradient_at(point: Coords, scale: u124, seed: Field) -> (Signed, Signe
         }
     };
 
-    //(direction.0.mul(point.x), direction.1.mul(point.y))
-    //(direction.0.muli(DENOMINATOR/1000), direction.1.muli(DENOMINATOR/1000))
     (direction.0, direction.1)
 }
 
+// The closer a point is to a gradient, the more influental that gradient is on the value
+// Returns a value with scale**2 denominator
 fn get_weight(corner: Coords, point: Coords, scale: u124) -> u124 {
     let diff = corner.diff(point);
     let res = (scale - diff.x.absi()) * (scale - diff.y.absi());
-    //let mut res = (DENOMINATOR - diff.x.absi()) * (DENOMINATOR - diff.y.absi());
-    //res += (scale - scale);
-    //res /= DENOMINATOR;
 
     res
 }
 
+// Get the coordinates of the corners of the grid cell the point exists in
 fn get_corners(point: Coords, scale: u124) -> [Coords; 4] {
     let scaleS = Signed::to_signed(scale);
 
@@ -97,12 +96,16 @@ fn get_corners(point: Coords, scale: u124) -> [Coords; 4] {
     ]
 }
 
+// Do product of the graduent and offset
 fn dot(offset: Coords, gradient: (Signed, Signed)) -> Signed {
     let dotx = gradient.0.mul(offset.x);
     let doty = gradient.1.mul(offset.y);
     dotx.add(doty)
 }
 
+// Returns a perlin value that is equal to [return val / scale]
+// This number should be interpreted as [-1.0, 1.0]
+// A value of 0 would then result in PERLIN_MAX/2
 fn single_scale_perlin(point: Coords, scale: u124, seed: Field) -> Signed {
     let corners = get_corners(point, scale);
 
@@ -131,6 +134,7 @@ fn single_scale_perlin(point: Coords, scale: u124, seed: Field) -> Signed {
     numerator.div(Signed::to_signed(1000*scale*scale))
 }
 
+// Compute the perlin value, and consider the effects of gradients of further intersection points
 fn compute_perlin(point: Coords, scale: u124, seed: Field) -> u124 {
     let mut perlin = Signed::to_signed(0);
 
