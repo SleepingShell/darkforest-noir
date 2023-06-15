@@ -18,3 +18,16 @@ The power of this is that not only is a fog of war possible in a completely secu
 [Perlin Noise](https://en.wikipedia.org/wiki/Perlin_noise) is a common method in gaming for procedural generation. It is a function that creates smooth scaling of its output while still containing random generation. Points that are closer together will have closer perlin values. 
 
 The high level overview of Perlin scaling is that it will segment the defined space into a grid of set lengths. Each vertex of the grid will have a randomly directed gradient vector in order to add randomness to the output. Depending on how close a point is to the 4 gradients of the square it is in will determine its influence on the output value.
+
+# Noir Notes
+The contracts have been modified to use Noir generated SNARKs. 
+
+Run ``./genContracts.sh`` to compile the contract verifiers with nargo and copy them to the ``eth/contracts/verifiers`` folder
+
+Because bb.js cannot be used in conjunction with Hardhat, the testing is done through vitest and connecting to a localhost provider. You can use either Hardhat Network or Anvil, I run the latter because it runs much faster.
+
+After starting a node, navigate to the ``eth`` submodule and run
+```bash
+yarn hardhat:deploy
+yarn test:snarks
+```
