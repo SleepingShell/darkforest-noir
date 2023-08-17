@@ -25,7 +25,7 @@ fn main(
     maxMove: pub Field,
     planethash_key: pub Field,
     spacetype_key: pub Field,
-    scale: pub Field
+    scale: pub u124
 ) {
     in_space(to, r);
     in_space(from.diff(to), maxMove); // Same equation as in-area check
@@ -33,18 +33,15 @@ fn main(
     // Check commits were generated correctly
     let gen1 = commithash(from, planethash_key);
     let gen2 = commithash(to, planethash_key);
-    // assert gen1 == commit1;
-    // assert gen2 == commit2;
-    assert (gen1 == gen1);
-    assert (gen2 == gen2);
-    assert (commit1 == commit1);
-    assert (commit2 == commit2);
+    assert (gen1 == commit1);
+    assert (gen2 == commit2);
+    //assert (gen1 == gen1);
+    //assert (gen2 == gen2);
+    //assert (commit1 == commit1);
+    //assert (commit2 == commit2);
 
-    //let perlGen = compute_perlin(to, scale, spacetype_key);
-    //assert perlGen == newPerlin;
-    assert (newPerlin == newPerlin);
-    assert (spacetype_key == spacetype_key);
-    assert (scale == scale);
+    let perlGen = compute_perlin(to, scale, spacetype_key);
+    assert (perlGen == newPerlin);
 }
 
 #[test]

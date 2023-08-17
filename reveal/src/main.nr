@@ -17,14 +17,12 @@ fn main(
     scale: pub u124,
 ) {
     let gen = commithash(point, planethash_key);
-    std::println(gen);
-    //assert (commit == commit);
+    //std::println(gen);
     assert (commit == gen);
 
     let perlGen = compute_perlin(point, scale, spacetype_key);
-    std::println(perlGen);
+    //std::println(perlGen);
     assert (perlGen == perlin);
-    //assert (perlin == perlin);
 }
 
 #[test]
