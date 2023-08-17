@@ -1,6 +1,8 @@
 [package]
-authors = [""]
-compiler_version = "0.5.1"
+name = "biomebase"
+type = "bin"
+authors = ["SleepingShell"]
+compiler_version = "0.10.3"
 
 [dependencies]
 df = { path = "../local" }
