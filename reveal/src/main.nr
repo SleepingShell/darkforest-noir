@@ -21,7 +21,6 @@ fn main(
     assert (commit == gen);
 
     let perlGen = compute_perlin(point, scale, spacetype_key);
-    //std::println(perlGen);
     assert (perlGen == perlin);
 }
 

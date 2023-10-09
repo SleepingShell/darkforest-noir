@@ -4,7 +4,7 @@ circuits=(Biomebase Init Move Reveal Whitelist)
 for circuit in "${circuits[@]}"
 do
   lower=$(echo "$circuit" | awk '{print tolower($0)}')
-  path="$lower/contract/plonk_vk.sol"
+  path="$lower/contract/${lower}/plonk_vk.sol"
   newpath="eth/contracts/verifiers/${lower}_vk.sol"
 
   # Generate the contract

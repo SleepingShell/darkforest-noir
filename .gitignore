@@ -2,6 +2,7 @@ refs/
 INTERNAL.md
 plonk_vk.sol
 *.proof
+*.json
 Prover.toml
 Verifier.toml
 abiHashes.json

@@ -23,8 +23,7 @@ global pow123: u124 = 10633823966279326983230456482242756608; //2^123
 fn random(x: u124, y: u124, scale: u124, seed: Field) -> u4 {
     let t = std::hash::mimc_bn254([x as Field, y as Field, scale as Field, seed]);
 
-    let bits = t.to_le_bits(32);
-    8*(bits[3] as u4) + 4*(bits[2] as u4) + 2*(bits[1] as u4) + (bits[0] as u4)
+    t as u4
 }
 
 // Return a deterministicly random direction of the gradient vector
