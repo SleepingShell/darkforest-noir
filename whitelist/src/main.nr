@@ -13,8 +13,3 @@ fn main(
     // Recipient must be included so the SNARK cannot be stolen in mempool
     assert (recipient == recipient);
 }
-
-#[test]
-fn test_main() {
-
-}

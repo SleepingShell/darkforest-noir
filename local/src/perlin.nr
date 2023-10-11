@@ -145,7 +145,6 @@ fn compute_perlin(point: Coords, scale: u124, seed: Field) -> u124 {
     perlin = perlin.div(Signed::to_signed(4));
     perlin = perlin.muli(PERLIN_MAX/2);
 
-    //(perlin.absi() / scale) + (PERLIN_MAX/2)
     perlin.div(Signed::to_signed(scale)).add(Signed::to_signed(PERLIN_MAX/2)).absi()
 }
 

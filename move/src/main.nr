@@ -39,8 +39,3 @@ fn main(
     let perlGen = compute_perlin(to, scale, spacetype_key);
     assert (perlGen == newPerlin);
 }
-
-#[test]
-fn test_main() {
-
-}
